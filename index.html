@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body {
+            width: 60%;
+            margin: auto;
+            margin-top: 20%;
+            overflow: auto;
+        }
+
+        .buttom {
+            margin: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <div>
+        <div>
+            设备价格（单位：元）
+        </div>
+        <div>
+            <input type="number" id="price">
+        </div>
+        <div>
+            租用期限（单位：月）
+        </div>
+        <div>
+            <select id="select">
+                <option value="3">3期</option>
+                <option value="4">4期</option>
+                <option value="5">5期</option>
+                <option value="6">6期</option>
+                <option value="7">7期</option>
+                <option value="8">8期</option>
+                <option value="9">9期</option>
+                <option value="10">10期</option>
+                <option value="11">11期</option>
+                <option value="12">12期</option>
+            </select>
+        </div>
+        <div>
+            押金
+        </div>
+        <div>
+            <input type="number" id="yaJin">
+        </div>
+        <button class="buttom" onclick="calculator()">试算租金</button>
+    </div>
+
+    <div class="table">
+        <table border="1" cellspacing="0" width="250px">
+            <thead>
+                <tr>
+                    <th>期数</th>
+                    <th>付款日</th>
+                    <th>租金</th>
+                </tr>
+            </thead>
+            <tbody id="tableTbody">
+
+            </tbody>
+
+        </table>
+    </div>
+    <script>
+
+        function calculator() {
+            const tableContainer = document.getElementById('tableTbody')
+            tableContainer.innerHTML = ''
+            var datas = []
+            var selectId = document.getElementById('select')
+            var selectValue = selectId.options[selectId.selectedIndex].value
+            console.log(selectValue); // 输出选中的值
+
+            var inputPrice = document.getElementById("price");
+            var inputPriceValue = inputPrice.value;  // 获取输入框的值
+            console.log(inputPriceValue);
+
+            var inputYaJin = document.getElementById("yaJin");
+            var inputYaJinValue = inputYaJin.value;  // 获取输入框的值
+            console.log(inputYaJinValue);
+
+            const repaymentAmount = inputPriceValue - inputYaJinValue
+            //每个月利息
+            var interest = (repaymentAmount * 0.05 * selectValue + repaymentAmount) / (selectValue - 1)
+
+            var currentDate = new Date();
+            var totle = 0
+            for (let i = 0; i < selectValue; i++) {
+
+                const monthDate = new Date(currentDate); // 复制当前日期，避免修改原始日期对象
+                monthDate.setMonth(currentDate.getMonth() + i); // 设置月份为当前月份加上i（0到5），代表接下来的6个月
+
+                const monthYear = monthDate.toLocaleDateString('default', { year: 'numeric', month: 'long', day: 'numeric' }); // 格式化日期为“月 年”形式
+
+                console.log(monthYear)
+                if (i == 0) {
+                    datas.push({
+                        number: '首期款',
+                        date: monthYear,
+                        price: inputYaJinValue
+                    })
+                } else {
+                    datas.push({
+                        number: `第${i + 1}期`,
+                        date: monthYear,
+                        price: parseInt(interest)
+                    })
+                }
+                totle += parseInt(datas[i].price)
+
+                var tbody = document.querySelector('tbody')
+                var tr = document.createElement('tr')
+                tbody.appendChild(tr)
+                for (var k in datas[i]) {
+                    var td = document.createElement('td')
+                    td.innerHTML = datas[i][k]
+                    tr.appendChild(td)
+                }
+                console.log(datas)
+                if (i == (selectValue - 1)) {
+                    var tbody = document.querySelector('tbody')
+                    var tr = document.createElement('tr')
+                    tbody.appendChild(tr)
+
+                    datas.push({
+                        number: `合计`,
+                        date: '',
+                        price: totle
+                    })
+                    for (var k in datas[i + 1]) {
+                        var td = document.createElement('td')
+                        td.innerHTML = datas[i + 1][k]
+                        tr.appendChild(td)
+                    }
+                }
+            }
+        }
+    </script>
+</body>
+
+</html>
