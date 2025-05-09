@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>租金计算器</title>
     <style>
         body {
             width: 60%;
@@ -88,7 +88,7 @@
 
             const repaymentAmount = inputPriceValue - inputYaJinValue
             //每个月利息
-            var interest = (repaymentAmount * 0.05 * selectValue + repaymentAmount) / (selectValue - 1)
+            var interest = (repaymentAmount * (1 + selectValue * 5 / 100)) / (selectValue - 1)
 
             var currentDate = new Date();
             var totle = 0
